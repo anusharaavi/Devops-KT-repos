@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      # nodeSelector:
+      #   kubernetes.io/os: linux
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:latest
+        args:
+          - --path.procfs=/host/proc
+          - --path.sysfs=/host/sys
+        ports:
+        - name: metrics
+          containerPort: 9100
+        volumeMounts:
+        - name: procfs
+          mountPath: /host/proc
+          readOnly: true
+        - name: sysfs
+          mountPath: /host/sys
+          readOnly: true
+      volumes:
+      - name: procfs
+        hostPath:
+          path: /proc
+      - name: sysfs
+        hostPath:
+          path: /sys
+
+#Deployments and ReplicaSets are used to ensure that a certain number of pods are always running. These pods may run on different nodes based on the affinity that we give. But in some cases, we need to perform a specific task on every node in the cluster, such as collecting logs or metrics for each node.
+ 
+#In such cases, using Deployments or ReplicaSets does not guarantee that the pod runs on every single node as nodes may get added to the cluster dynamically.
+ 
+#here we learning how to perform node-specific tasks, such as collecting logs and metrics by running a pod on all nodes in the cluster using DaemonSets 
