@@ -4,9 +4,9 @@ metadata:
   name: mongodb-backup-cronjob
 spec:
   schedule: "* * * * *"
-  concurrencyPolicy: Allow
-  successfulJobsHistoryLimit: 2
-  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Allow # to run multiple cron jobs to run concurrently or parallely ( other 2 are forbid & replace )
+  successfulJobsHistoryLimit: 2  # how many completed jobs should be stored for future
+  failedJobsHistoryLimit: 3  
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 60 # delete job after 60 seconds
@@ -20,7 +20,7 @@ spec:
                 [                                                                                                                                                                                                                                                                                    #path where dump is to be saved                             
                   'mongodump --uri "mongodb://test1:${MONGO_PASSWORD}@mongo-0.mongo.default.svc.cluster.local:27017,mongo-1.mongo.default.svc.cluster.local:27017,mongo-2.mongo.default.svc.cluster.local:27017/?replicaSet=rs0&readPreference=secondaryPreferred&authSource=admin&ssl=false" -o /usr/share/mongodump/$(date +"%d%m%Y-%H%M%S")',
                 ]
-              volumeMounts:
+              volumeMounts:  # volume is mounted
                 - mountPath: "/usr/share/mongodump/"
                   name: mongodump
               env:
