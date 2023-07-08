@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+#script to check remote connectivity of 1000 systems in your infrastructure and generate alert if system is not reachable
 # List of remote system IP addresses or hostnames
 systems=(
     www.google.com
